@@ -37,4 +37,17 @@ jobs:
       run: cargo test --verbose
     
     - name: Run doctests
-      run: cargo test --doc --verbose 
+      run: cargo test --doc --verbose
+      
+    - name: Install cargo-tarpaulin
+      run: cargo install cargo-tarpaulin
+      
+    - name: Generate coverage report
+      run: cargo tarpaulin --out Xml
+      
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.xml
+        fail_ci_if_error: true 

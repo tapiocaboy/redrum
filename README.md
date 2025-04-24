@@ -148,4 +148,13 @@ cargo test --doc
 ```
 
 ### Test Coverage
-The project uses Codecov to track test coverage. The coverage badge at the top of this README shows the current coverage percentage. 
+The project uses Codecov to track test coverage. The coverage badge at the top of this README shows the current coverage percentage.
+
+To generate a local coverage report:
+```bash
+# Install cargo-tarpaulin
+cargo install cargo-tarpaulin
+
+# Generate coverage report
+cargo tarpaulin
+``` 
