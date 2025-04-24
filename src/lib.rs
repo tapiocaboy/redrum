@@ -1,4 +1,4 @@
-use sha2::{Sha256, Digest};
+use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 
 /// Computes the SHA-256 hash of a string input
@@ -32,7 +32,8 @@ pub fn hash_string(input: &str) -> String {
 /// assert_eq!(result[2].0, 'C');
 /// ```
 pub fn hash_individual_chars(input: &str) -> Vec<(char, String)> {
-    input.chars()
+    input
+        .chars()
         .map(|c| (c, hash_string(&c.to_string())))
         .collect()
 }
@@ -88,19 +89,20 @@ pub fn get_alphabet_index(c: char) -> u8 {
 pub fn analyze_combined_hashes(word: &str) -> (String, Vec<(char, String)>, String) {
     // Hash the entire word
     let word_hash = hash_string(word);
-    
+
     // Hash individual characters
     let char_hashes = hash_individual_chars(word);
-    
+
     // Concatenate individual character hashes
-    let concatenated_hashes = char_hashes.iter()
+    let concatenated_hashes = char_hashes
+        .iter()
         .map(|(_, hash)| hash.as_str())
         .collect::<Vec<&str>>()
         .join("");
-    
+
     // Hash the concatenated hashes
     let combined_hash = hash_string(&concatenated_hashes);
-    
+
     (word_hash, char_hashes, combined_hash)
 }
 
@@ -115,25 +117,32 @@ pub fn analyze_combined_hashes(word: &str) -> (String, Vec<(char, String)>, Stri
 /// let word_hash = "a".repeat(64); // Mock hash
 /// let combined_hash = "b".repeat(64); // Mock hash
 /// let shifts = analyze_character_shifts(word, &word_hash, &combined_hash);
-/// 
+///
 /// assert_eq!(shifts.len(), 4); // Should have same length as input word
 /// assert_eq!(shifts[0].0, 'T'); // First character should be 'T'
 /// assert_eq!(shifts[0].1, 19); // 'T' should have index 19
 /// ```
-pub fn analyze_character_shifts(word: &str, word_hash: &str, combined_hash: &str) -> Vec<(char, u8, char, char)> {
+pub fn analyze_character_shifts(
+    word: &str,
+    word_hash: &str,
+    combined_hash: &str,
+) -> Vec<(char, u8, char, char)> {
     let mut shifts = Vec::new();
-    
+
     // Get character positions in word hash and combined hash
     for (i, c) in word.chars().enumerate() {
         let alphabet_index = get_alphabet_index(c);
-        
+
         // Get corresponding characters from hashes (using modulo to handle different lengths)
         let word_hash_char = word_hash.chars().nth(i % word_hash.len()).unwrap_or('?');
-        let combined_hash_char = combined_hash.chars().nth(i % combined_hash.len()).unwrap_or('?');
-        
+        let combined_hash_char = combined_hash
+            .chars()
+            .nth(i % combined_hash.len())
+            .unwrap_or('?');
+
         shifts.push((c, alphabet_index, word_hash_char, combined_hash_char));
     }
-    
+
     shifts
 }
 
@@ -187,9 +196,9 @@ mod tests {
         let word_hash = "a".repeat(64); // Mock hash
         let combined_hash = "b".repeat(64); // Mock hash
         let shifts = analyze_character_shifts(word, &word_hash, &combined_hash);
-        
+
         assert_eq!(shifts.len(), 4); // Should have same length as input word
         assert_eq!(shifts[0].0, 'T'); // First character should be 'T'
         assert_eq!(shifts[0].1, 19); // 'T' should have index 19
     }
-} 
+}
