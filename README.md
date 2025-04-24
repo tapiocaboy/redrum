@@ -1,7 +1,7 @@
 # REDRUM Hash Analysis Tool
 
-[![Rust CI](https://github.com/kalanamith/redrum/actions/workflows/rust.yml/badge.svg)](https://github.com/kalanamith/redrum/actions/workflows/rust.yml)
-[![codecov](https://codecov.io/gh/kalanamith/redrum/branch/main/graph/badge.svg?token=YOUR_CODECOV_TOKEN)](https://codecov.io/gh/kalanamith/redrum)
+[![CI](https://github.com/tapiocaboy/redrum/actions/workflows/rust.yml/badge.svg?branch=main)](https://github.com/tapiocaboy/redrum/actions)
+[![codecov](https://codecov.io/gh/tapiocaboy/redrum/graph/badge.svg)](https://codecov.io/gh/tapiocaboy/redrum)
 
 A command-line tool for analyzing SHA-256 hashes of words, with a focus on character-level analysis, frequency distribution, and hash pattern analysis.
 
