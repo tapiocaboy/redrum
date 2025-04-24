@@ -6,15 +6,24 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 env:
   CARGO_TERM_COLOR: always
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 jobs:
-  build:
+  test:
+    name: Test & Coverage
     runs-on: ubuntu-latest
-
+    
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
     
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
@@ -40,15 +49,54 @@ jobs:
       run: cargo test --doc --verbose
       
     - name: Install cargo-tarpaulin
-      run: cargo install cargo-tarpaulin
+      uses: taiki-e/install-action@cargo-tarpaulin
       
     - name: Generate coverage report
-      run: cargo tarpaulin --out Xml --out Html
-      
+      run: |
+        cargo tarpaulin --verbose --all-features --workspace --timeout 120 --out Xml --out Html --output-dir coverage
+        
     - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v5
+      uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./cobertura.xml
+        files: coverage/cobertura.xml
         fail_ci_if_error: false
-        verbose: true 
+        verbose: true
+        
+    - name: Archive code coverage results
+      uses: actions/upload-artifact@v4
+      with:
+        name: code-coverage-report
+        path: coverage/
+        
+    - name: Find Comment
+      uses: peter-evans/find-comment@v3
+      if: github.event_name == 'pull_request'
+      id: fc
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: 'github-actions[bot]'
+        body-includes: Code Coverage Report
+        
+    - name: Create or update coverage comment
+      uses: peter-evans/create-or-update-comment@v4
+      if: github.event_name == 'pull_request'
+      with:
+        comment-id: ${{ steps.fc.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          ## Code Coverage Report
+          
+          Coverage report for commit: ${{ github.sha }}
+          
+          View the full report at: https://codecov.io/gh/${{ github.repository }}/commit/${{ github.sha }}
+          
+          <details>
+          <summary>Coverage Details</summary>
+          
+          ```
+          ${{ steps.coverage.outputs.report }}
+          ```
+          
+          </details>
+        edit-mode: replace 
