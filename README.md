@@ -13,8 +13,6 @@ A command-line tool for analyzing SHA-256 hashes of words, with a focus on chara
 - Combined hash analysis (word vs. concatenated character hashes)
 - Character shifting analysis between different hash methods
 - Command-line interface with customizable input
-- ASCII art display
-- Comprehensive doctests for all library functions
 
 ## Installation
 
