@@ -2,7 +2,7 @@
 name = "redrum"
 version = "0.1.0"
 edition = "2021"
-authors = ["Your Name <your.email@example.com>"]
+authors = ["Kalanamith kalanamith@gmail.com"]
 description = "A tool for analyzing SHA-256 hashes of words with various analysis methods"
 license = "MIT"
 
